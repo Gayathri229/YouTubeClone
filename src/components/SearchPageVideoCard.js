@@ -17,7 +17,6 @@ const SearchPageVideoCard = ({ info, query }) => {
 
   const setVideoInfo = async () => {
     const response = await fetchVideoInfo();
-    console.log("Response", response);
     setVideoData(response);
   };
 
@@ -39,21 +38,25 @@ const SearchPageVideoCard = ({ info, query }) => {
   ) : (
     <div className="flex m-2 p-2">
       <img
-        src={thumbnails?.medium?.url}
+        src={
+          thumbnails?.maxres?.url !== undefined
+            ? thumbnails?.maxres?.url
+            : thumbnails?.medium?.url
+        }
         alt="thumbnail"
-        className="rounded-lg"
+        className="rounded-lg w-[384px] h-[216px]"
       />
-      <div className="mx-4">
-        <p>{title}</p>
-        <div className="flex font-semibold text-sm items-center">
-          <p className="my-2 mr-1">
+      <div className="mx-4 font-roboto">
+        <p className="text-lg">{title}</p>
+        <div className="flex text-xs items-center opacity-70">
+          <p className="mr-1">
             {formatCount(videoData?.[0]?.statistics?.viewCount)} views
           </p>
           <p>•</p>
-          <p className="my-2 ml-1">{moment(publishedAt).fromNow()}</p>
+          <p className="ml-1">{moment(publishedAt).fromNow()}</p>
         </div>
-        <p className="font-bold text-lg mt-2">{channelTitle}</p>
-        <p className="mt-2 text-sm">{description}</p>
+        <p className="my-4 text-xs opacity-70">{channelTitle}</p>
+        <p className="my-4 text-xs opacity-70">{description}</p>
         <p>{}</p>
       </div>
     </div>

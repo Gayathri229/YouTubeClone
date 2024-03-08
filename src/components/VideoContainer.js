@@ -19,20 +19,28 @@ const VideoContainer = () => {
     if (pageTokenRef.current) {
       url += `&pageToken=${pageTokenRef.current}`;
     }
-    console.log("page token", pageTokenRef.current);
 
     try {
       const data = await fetch(url);
       const json = await data.json();
       setVideos((prevVideos) => {
         const newVideos = json?.items;
-        const existingVideoIds = new Set(prevVideos.map((video) => video.id));
-
-        const uniqueVideos = newVideos.filter(
-          (video) => !existingVideoIds.has(video?.id)
+        const hasSameContent = prevVideos.every(
+          (prevVideo, index) => prevVideo.id === newVideos[index].id
         );
-        return [...prevVideos, ...uniqueVideos];
+        if (hasSameContent) {
+          return [...newVideos];
+        }
+
+        // const existingVideoIds = new Set(prevVideos.map((video) => video.id));
+
+        // const uniqueVideos = newVideos.filter(
+        //   (video) => !existingVideoIds.has(video?.id)
+        // );
+        console.log("videosssss", videos);
+        return [...prevVideos, ...newVideos]; // prevVideos = 1-10 + 11-20
       });
+
       pageTokenRef.current = json?.nextPageToken;
     } catch (error) {
       console.error("Error fetching videos:", error);
@@ -47,7 +55,17 @@ const VideoContainer = () => {
     };
   }, []);
 
-  const debouncedHandleScroll = debounce(fetchVideos,500);
+  // const debounce = (func, delay) => {
+  //   let timeoutId;
+  //   return (...args) => {
+  //     clearTimeout(timeoutId);
+  //     timeoutId = setTimeout(() => {
+  //       func(...args);
+  //     }, delay);
+  //   };
+  // };
+
+  const debouncedHandleScroll = debounce(fetchVideos, 500);
 
   const handleScroll = () => {
     const bottom =

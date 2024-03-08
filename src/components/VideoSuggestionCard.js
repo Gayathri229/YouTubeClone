@@ -13,14 +13,14 @@ const VideoSuggestionCard = ({ info }) => {
         alt="thumbnail"
         className="w-48 rounded-lg m-1"
       />
-      <div className="m-1">
-        <p className="truncate text-[16px] whitespace-break-spaces line-clamp-2 text-sm font-bold mb-1">
+      <div className="m-1 font-roboto relative -z-10">
+        <p className="truncate whitespace-break-spaces line-clamp-2 text-[15px] font-[500] mb-1">
           {title}
         </p>
-        <p className="text-sm font-semibold">{channelTitle}</p>
-        <div className="flex items-center">
+        <p className="text-xs opacity-70">{channelTitle}</p>
+        <div className="flex items-center text-xs opacity-70 mt-1 ">
           <p>{formatCount(viewCount)} views</p>
-          <p className="mx-1 text-sm">•</p>
+          <p className="mx-1">•</p>
           <p>{moment(publishedAt).fromNow()}</p>
         </div>
       </div>

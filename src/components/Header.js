@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
-import YouTubeLogo from "../images/youtube-logo-cropped-2.png";
+import YouTubeLogoDark from "../images/yt_logo_rgb_dark.png";
+import YouTubeLogoLight from "../images/yt_logo_rgb_light.png";
 import { FaUserCircle } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,11 +11,22 @@ import { cacheResults } from "../utils/searchSlice";
 import { Link } from "react-router-dom";
 import { MdOutlineDarkMode } from "react-icons/md";
 import { HiOutlineXMark } from "react-icons/hi2";
+import { toggleDarkMode } from "../utils/darkModeSlice";
+import { IoIosSearch } from "react-icons/io";
+import { CiBellOn } from "react-icons/ci";
+import { PiMoon } from "react-icons/pi";
+import { PiUserCircleLight } from "react-icons/pi";
+import { MdMic } from "react-icons/md";
+import { GoHistory } from "react-icons/go";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [showSearchHistory, setShowSearchHistory] = useState(false);
+  const searchBoxRef = useRef(null);
+  const inputRef = useRef(null);
 
   const dispatch = useDispatch();
   const searchCache = useSelector((store) => store.search);
@@ -22,6 +34,12 @@ const Header = () => {
 
   const handleToggleMenu = () => {
     dispatch(toggleMenu());
+  };
+
+  const isDarkMode = useSelector((store) => store.darkMode.isDarkMode);
+
+  const enableDarkMode = () => {
+    dispatch(toggleDarkMode());
   };
 
   const getSearchSuggestions = async () => {
@@ -57,13 +75,44 @@ const Header = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const clearSearch = () => {
+  const clearSearch = (event) => {
     setSearchQuery("");
+    console.log("clear search", showSearchHistory);
+    setShowSearchHistory(true);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
-  // const fetchSearchResults = () => {
-  //   console.log("suggestion clicked");
-  // };
+  const handleSuggestionClick = (suggestion) => {
+    setShowSuggestions(false);
+    setSearchHistory([...searchHistory, suggestion]);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      console.log("search box ref", searchBoxRef.current);
+      console.log("Event target", event.target);
+      if (
+        searchBoxRef.current &&
+        !searchBoxRef.current.contains(event.target) &&
+        !event.target.classList.contains("clearSearchButton") &&
+        !event.target.classList.contains("clearSearchDiv")
+      ) {
+        console.log("searchBoxRef", showSearchHistory);
+        setShowSearchHistory(false);
+        setShowSuggestions(false);
+      }
+    };
+
+    if (showSearchHistory || showSuggestions) {
+      document.addEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [showSearchHistory, showSuggestions]);
 
   /**
    * key i =>
@@ -82,72 +131,195 @@ const Header = () => {
    * if next key stroke is pressed in less than 200s, timer is cleared(as in return function) and component gets re-rendered again
    * and a new timer is setup
    */
-
   return (
-    <div className="flex p-2 mx-2 items-center gap-2 justify-between">
-      <div className="flex">
-        <RxHamburgerMenu
-          size={23}
-          className=" mx-2 mr-4 cursor-pointer"
-          onClick={() => handleToggleMenu()}
-        />
-        <img
-          className="w-[110px] pb-2 cursor-pointer"
-          alt="youtube-logo"
-          src={YouTubeLogo}
-        ></img>
+    <div
+      className={
+        "flex mx-2 py-1 px-2 items-center gap-2 justify-between fixed w-full z-10 " +
+        (isDarkMode ? " bg-black" : " bg-white")
+      }
+    >
+      <div className="flex items-center">
+        <div
+          className={
+            "mx-2 mr-4 p-2 hover:rounded-full " +
+            (isDarkMode
+              ? "hover:bg-white hover:bg-opacity-15"
+              : "hover:bg-black hover:bg-opacity-10")
+          }
+        >
+          <RxHamburgerMenu
+            size={23}
+            className={
+              "box-border cursor-pointer " + (isDarkMode ? "text-white " : "")
+            }
+            onClick={() => handleToggleMenu()}
+          />
+        </div>
+        <div>
+          <img
+            className="w-[100px] cursor-pointer"
+            alt="youtube-logo"
+            src={isDarkMode ? YouTubeLogoDark : YouTubeLogoLight}
+          ></img>
+        </div>
         {/* https://www.freeiconspng.com/uploads/youtube-logo-png-transparent-image-5.png */}
       </div>
-      <div className="flex justify-center mr-20">
+      <div className="flex justify-center items-center ml-14">
         <div>
-          <div className="flex relative">
+          <div className="flex relative searchBox" ref={searchBoxRef}>
             <input
               type="text"
-              className="border border-gray-500 h-[40px] w-[600px] rounded-l-full p-1 pl-5 pb-1 text-lg"
-              placeholder="Search..."
+              className={
+                "h-[40px] w-[580px] rounded-l-full p-1 pl-5 pb-1 text-[16px] border font-roboto " +
+                (isDarkMode
+                  ? " bg-black text-white border-gray-800 focus:border-[#1c62b9]"
+                  : " border-gray-300 focus:border-[#1c62b9]")
+              }
+              ref={inputRef}
+              placeholder="Search"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onClick={() => setShowSearchHistory(true)}
+              onChange={(event) => setSearchQuery(event.target.value)}
               onFocus={() => setShowSuggestions(true)}
-              // onBlur={() => setShowSuggestions(false)}
             />
             {searchQuery.length > 0 && (
-              <div className="absolute right-0 m-1 hover:bg-gray-50 hover:rounded-full p-1">
+              <div
+                className={
+                  "clearSearchDiv absolute right-0 hover:rounded-full p-2 " +
+                  (isDarkMode
+                    ? "hover:bg-white hover:bg-opacity-25"
+                    : "hover:bg-black hover:bg-opacity-10")
+                }
+                onClick={(event) => clearSearch(event)}
+              >
+                {/* <img
+                  src={isDarkMode ? whiteClearButton : ClearButton}
+                  alt="clear button"
+                  className="clearSearchButton h-5 w-5"
+                /> */}
                 <HiOutlineXMark
                   size={25}
-                  onClick={clearSearch}
-                  className="cursor-pointer"
+                  className={
+                    "clearSearchButton cursor-pointer " +
+                    (isDarkMode && " text-white")
+                  }
                 />
               </div>
             )}
           </div>
 
-          <div>
-            {showSuggestions && searchSuggestions.length > 0 && (
-              <div className="relative shadow-lg">
-                <ul className="absolute bg-white w-[600px] border border-gray-300 rounded-lg p-2 m-1 shadow-lg">
-                  {searchSuggestions.map((suggestion) => (
-                    <Link to={"/search?q=" + suggestion} key={suggestion}>
-                      <li
-                        className="flex m-2 py-1 hover:bg-gray-100 hover:rounded-sm cursor-pointer"
-                        onClick={() => setShowSuggestions(false)}
+          {searchQuery.length > 0 ? (
+            <div>
+              {showSuggestions && searchSuggestions.length > 0 && (
+                <div className="shadow-lg">
+                  <ul
+                    className={
+                      "absolute w-[580px] rounded-xl m-1 shadow-lg " +
+                      (isDarkMode ? "bg-[#222021] text-white" : "bg-white")
+                    }
+                  >
+                    {searchSuggestions.map((suggestion) => (
+                      <div
+                        className={
+                          isDarkMode
+                            ? "hover:bg-white hover:bg-opacity-10"
+                            : "hover:bg-gray-100"
+                        }
                       >
-                        <CiSearch size={21} className="mr-3 mt-[2px]" />
-                        {suggestion}
-                      </li>
-                    </Link>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+                        <Link to={"/search?q=" + suggestion} key={suggestion}>
+                          <li
+                            className={
+                              "flex items-center m-2 p-1 px-2 cursor-pointer font-roboto "
+                            }
+                            onClick={() => handleSuggestionClick(suggestion)}
+                          >
+                            <CiSearch size={21} className={"mr-3"} />
+                            {suggestion}
+                          </li>
+                        </Link>
+                      </div>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div>
+              {showSearchHistory && searchHistory.length > 0 && (
+                <div className="relative shadow-lg">
+                  <ul
+                    className={
+                      "absolute w-[580px] rounded-xl m-1 shadow-lg " +
+                      (isDarkMode ? "bg-[#222021] text-white" : "bg-white")
+                    }
+                  >
+                    {searchHistory.map((searchTerm) => (
+                      <div
+                        className={
+                          isDarkMode
+                            ? "hover:bg-white hover:bg-opacity-10"
+                            : "hover:bg-gray-100"
+                        }
+                      >
+                        <Link to={"/search?q=" + searchTerm} key={searchTerm}>
+                          <li className="flex items-center m-2 p-1 cursor-pointer font-roboto">
+                            <GoHistory size={20} className="mr-3" />
+                            {searchTerm}
+                          </li>
+                        </Link>
+                      </div>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-        <button className="border border-gray-500 bg-gray-200 rounded-r-full py-2 px-4 h-[40px]">
-          <CiSearch size={23} />
+        <button
+          className={
+            "border rounded-r-full py-2 px-5 h-[40px] " +
+            (isDarkMode
+              ? " bg-[#222021] border-gray-800"
+              : " border-gray-300 hover:bg-gray-100")
+          }
+        >
+          <IoIosSearch size={23} className={isDarkMode && " text-white"} />
         </button>
+        <div
+          className={
+            "m-2 ml-4 rounded-full cursor-pointer " +
+            (isDarkMode ? "bg-white bg-opacity-10 hover:bg-opacity-20" : "bg-black bg-opacity-5 hover:bg-opacity-10")
+          }
+        >
+          <MdMic
+            size={23}
+            className={"m-2 " + (isDarkMode && "text-white")}
+          />
+        </div>
       </div>
       <div className="flex m-2 items-center">
-        <MdOutlineDarkMode size={32} className="m-2" />
-        <FaUserCircle size={30} className="m-2" />
+        <div className="m-2 mx-3 cursor-pointer">
+          <svg
+            className="h-[26px] w-[26px]"
+            viewBox="0 0 24 24"
+            fill={isDarkMode ? "white" : "black"}
+          >
+            <path d="M14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2zm3-7H3v12h14v-6.39l4 1.83V8.56l-4 1.83V6m1-1v3.83L22 7v8l-4-1.83V19H2V5h16z"></path>
+          </svg>
+        </div>
+        <CiBellOn
+          size={27}
+          className={"m-2 mx-3 cursor-pointer " + (isDarkMode && "text-white")}
+        />
+        <PiMoon
+          size={25}
+          className={"m-2 mx-3 cursor-pointer " + (isDarkMode && " text-white")}
+          onClick={() => enableDarkMode()}
+        />
+        <PiUserCircleLight
+          size={29}
+          className={"m-2 mx-3 " + (isDarkMode && "filter invert")}
+        />
       </div>
     </div>
   );

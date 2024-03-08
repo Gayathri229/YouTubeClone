@@ -1,71 +1,24 @@
-import React from "react";
-import { FaUserCircle } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { COMMENTS_API } from "../utils/constants";
+import CommentsList from "./CommentsList";
 
-const commentsData = [
-  { name: "Gayathri", text: "Lorem ipsum dimat bla bla bleh meh", replies: [] },
-  {
-    name: "Gayathri",
-    text: "Lorem ipsum dimat bla bla bleh meh",
-    replies: [
-      {
-        name: "Gayathri",
-        text: "Lorem ipsum dimat bla bla bleh meh",
-        replies: [
-          {
-            name: "Gayathri",
-            text: "Lorem ipsum dimat bla bla bleh meh",
-            replies: [
-              {
-                name: "Gayathri",
-                text: "Lorem ipsum dimat bla bla bleh meh",
-                replies: [],
-              },
-            ],
-          },
-        ],
-      },
-      { name: "Gayathri", text: "Lorem ipsum dimat bla bla", replies: [] },
-      { name: "Gayathri", text: "Lorem ipsum dimat bla bla", replies: [] },
-    ],
-  },
-  { name: "Gayathri", text: "Lorem ipsum dimat bla bla bleh meh", replies: [] },
-  { name: "Gayathri", text: "Lorem ipsum dimat bla bla", replies: [] },
-  { name: "Gayathri", text: "Lorem ipsum dimat bla bla", replies: [] },
-  { name: "Gayathri", text: "Lorem ipsum dimat bla bla", replies: [] },
-  { name: "Gayathri", text: "Lorem ipsum dimat bla bla", replies: [] },
-];
+const CommentsContainer = ({videoId}) => {
+  const [commentsList, setCommentsList] = useState([]);
 
-const Comment = ({ data }) => {
-  const { name, text, replies } = data;
+  useEffect(() => {
+    fetchComments();
+  }, [videoId]);
 
-  return (
-    <div className="m-2 p-2 shadow-lg rounded-lg">
-      <div className="username flex items-center">
-        <FaUserCircle size={22} />
-        <p className="p-2">{name}</p>
-      </div>
-      <p className="ml-8">{text}</p>
-    </div>
-  );
-};
+  const fetchComments = async () => {
+    const commentsData = await fetch(COMMENTS_API + videoId);
+    const json = await commentsData.json();
+    setCommentsList(json?.items);
+  };
 
-const CommentsList = ({ comments }) => {
-  return comments.map((comment, index) => (
-    <div key={index}>
-      <Comment data={comment} />
-      <div className="ml-5 border border-l-black">
-        <CommentsList comments={comment.replies} />
-      </div>
-    </div>
-  ));
-};
-
-const CommentsContainer = () => {
   return (
     <div className="m-4">
-      Comments:
-      {/* <Comment data={commentsData[0]} />; */}
-      <CommentsList comments={commentsData} />
+      <p className="font-semibold text-2xl">Comments:</p>
+      <CommentsList comments={commentsList} />
     </div>
   );
 };

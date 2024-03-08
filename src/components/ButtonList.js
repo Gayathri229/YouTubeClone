@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "./Button";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { useSelector } from "react-redux";
 
 const ButtonList = () => {
   const buttonNameList = [
@@ -26,18 +27,26 @@ const ButtonList = () => {
     slider.scrollLeft = slider.scrollLeft + scrollOffset;
   };
 
+  const isDarkMode = useSelector((store) => store.darkMode.isDarkMode);
+
   return (
-    <div className="flex my-4 mx-8 w-full items-center">
+    <div className="flex mb-5 mx-8 w-full items-center">
       <div>
         <FaChevronLeft
           size={15}
           onClick={() => {
             handleScroll(-300);
           }}
-          className="text-[#A9A9A9] my-2 mr-2 hover:scale-110 cursor-pointer hover:text-black"
+          className={
+            "text-[#A9A9A9] my-2 mr-2 hover:scale-110 hover:text-black " +
+            (isDarkMode && " text-white hover:text-white hover:scale-110")
+          }
         />
       </div>
-      <div className="flex overflow-hidden scroll-smooth items-center" id="videoCategories">
+      <div
+        className="flex overflow-hidden scroll-smooth items-center font-roboto"
+        id="videoCategories"
+      >
         {buttonNameList.map((buttonName) => (
           <Button name={buttonName} key={buttonName} />
         ))}
@@ -48,7 +57,10 @@ const ButtonList = () => {
           onClick={() => {
             handleScroll(300);
           }}
-          className="text-[#A9A9A9] m-2 mx-4 hover:scale-110 cursor-pointer hover:text-black"
+          className={
+            "text-[#A9A9A9] m-2 mx-4 hover:scale-110 hover:text-black " +
+            (isDarkMode && " text-white hover:text-white hover:scale-110")
+          }
         />
       </div>
     </div>

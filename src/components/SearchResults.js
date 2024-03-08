@@ -16,14 +16,13 @@ const SearchResults = () => {
   const fetchSearchResults = async () => {
     const data = await fetch(searchResultUrl);
     const json = await data.json();
-    console.log("Search Results", json.items);
     setSearchResults(json?.items);
   };
 
   return searchResults.length === 0 ? (
     <Shimmer />
   ) : (
-    <div className="flex flex-col mx-20 my-10">
+    <div className="flex flex-col mx-20 my-10 mt-14 font-roboto">
       {searchResults.map((video) => {
         if (video?.id?.kind === "youtube#video") {
           return (
