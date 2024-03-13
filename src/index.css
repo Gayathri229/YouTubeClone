@@ -14,11 +14,12 @@ code {
 
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #d3d3d3;
   border-radius: 6px;
-}
+  transform: scaleY(0.5);
+ }
 

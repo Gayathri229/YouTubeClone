@@ -13,11 +13,11 @@ const CommentReplies = ({ data }) => {
         <img
           src={data?.snippet?.authorProfileImageUrl}
           alt="user profile"
-          className="w-8 h-8 rounded-full mt-3"
+          className="w-8 h-8 rounded-full mt-4 sm:w-6 sm:h-6"
         />
         <div className="flex flex-col m-3">
           <div className="flex items-center">
-            <p className="font-semibold text-sm">
+            <p className="font-semibold text-sm sm:text-xs">
               {data?.snippet?.authorDisplayName}
             </p>
             <p
@@ -30,7 +30,7 @@ const CommentReplies = ({ data }) => {
             </p>
           </div>
 
-          <p className="">{data?.snippet?.textOriginal}</p>
+          <p className="sm:text-sm">{data?.snippet?.textOriginal}</p>
           <div className="flex items-center">
             <div className="flex my-2 mr-5 items-center">
               <button className="mr-1">

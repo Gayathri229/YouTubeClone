@@ -4,7 +4,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        roboto: ['Roboto','sans-serif'],
+        roboto: ["Roboto", "sans-serif"],
+      },
+      screens: {
+        sm: { min: "320px", max: "640px" },
       },
     },
   },

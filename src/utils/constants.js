@@ -12,7 +12,7 @@ export const YOUTUBE_VIDEOS_API =
 
 export const YOUTUBE_CHANNELS_API =
   `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&key=` +
-  GOOGLE_API_KEY +
+  GOOGLE_API_KEY2 +
   `&id=`;
 
 export const YOUTUBE_VIDEO_PLAYER_API =
@@ -27,7 +27,7 @@ export const COMMENTS_API =
 export const buildVideoApiUrl = (videoId) => {
   return (
     `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=` +
-    GOOGLE_API_KEY
+    GOOGLE_API_KEY2
   );
 };
 
@@ -38,9 +38,9 @@ export const YOUTUBE_SEARCH_API =
 
 export const searchResultsApi = (searchQuery) => {
   return (
-    `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=${searchQuery}&key=` +
-    GOOGLE_API_KEY
+    `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchQuery}&key=` +
+    GOOGLE_API_KEY3
   );
 };
 
-export const LIVE_CHAT_LIMIT = 25;
+export const LIVE_CHAT_LIMIT = 50;

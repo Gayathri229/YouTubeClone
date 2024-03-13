@@ -17,12 +17,12 @@ const Comment = ({ data }) => {
         <img
           src={snippet?.topLevelComment?.snippet?.authorProfileImageUrl}
           alt="user profile"
-          className="w-11 h-11 rounded-full mt-3"
+          className="w-11 h-11 rounded-full mt-3 sm:w-8 sm:h-8"
         />
 
         <div className="flex flex-col mx-3 mt-2">
           <div className="flex items-center">
-            <p className="font-semibold text-sm">
+            <p className="font-semibold text-sm sm:text-xs">
               {snippet?.topLevelComment?.snippet?.authorDisplayName}
             </p>
             <p
@@ -35,7 +35,7 @@ const Comment = ({ data }) => {
             </p>
           </div>
 
-          <div className="">
+          <div className="sm:text-sm">
             {snippet?.topLevelComment?.snippet?.textOriginal}
           </div>
           <div className="flex items-center">
@@ -64,7 +64,7 @@ const Comment = ({ data }) => {
             }}
           >
             <IoMdArrowDropdown size={20} className="" />
-            <p className="inline-block whitespace-nowrap">
+            <p className="inline-block whitespace-nowrap sm:text-sm">
               {replies.comments?.length > 1
                 ? `${replies.comments?.length} replies`
                 : `${replies.comments?.length} reply`}

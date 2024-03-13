@@ -17,16 +17,19 @@ import { formatCount } from "../utils/helper";
 import LiveChat from "./LiveChat";
 import WatchPageVideoSuggestions from "./WatchPageVideoSuggestions";
 import { hideShortMenu } from "../utils/appSlice";
+import useFetchChannelInfo from "../utils/useFetchChannelInfo";
 
 const WatchPage = () => {
   const dispatch = useDispatch();
   const [player, setPlayer] = useState();
-  const [channelInfo, setChannelInfo] = useState();
+  // const [channelInfo, setChannelInfo] = useState();
+  const [channelId, setChannelId] = useState();
   const [showMore, setShowMore] = useState(false);
   const [searchParams] = useSearchParams();
   const videoId = searchParams.get("v");
   const displayShortMenu = useSelector((store) => store.app.displayShortMenu);
   const isDarkMode = useSelector((store) => store.darkMode.isDarkMode);
+  const channelInfoData = useFetchChannelInfo(channelId);
 
   useEffect(() => {
     dispatch(closeMenu());
@@ -34,50 +37,50 @@ const WatchPage = () => {
     fetchVideo();
   }, [videoId]);
 
+  useEffect(() => {});
+
   const fetchVideo = async () => {
     const data = await fetch(YOUTUBE_VIDEO_PLAYER_API + videoId);
     const json = await data.json();
     setPlayer(json?.items);
-    
-    const channelName = await fetch(
-      YOUTUBE_CHANNELS_API + json?.items?.[0]?.snippet?.channelId
-    );
-    const channelNameJson = await channelName.json();
-    setChannelInfo(channelNameJson?.items);
+
+    setChannelId(json?.items?.[0]?.snippet?.channelId);
+
+    // const channelName = await fetch(
+    //   YOUTUBE_CHANNELS_API + json?.items?.[0]?.snippet?.channelId
+    // );
+    // const channelNameJson = await channelName.json();
+    // setChannelInfo(channelNameJson?.items);
+    console.log("video details", player);
   };
 
   return (
-    <div className="w-full">
-      <div className="flex">
-        <div className="flex flex-col w-[900px] mt-[72px] m-10 ml-14">
-          <div className="flex">
-            <div className="">
-              <iframe
-                width="900"
-                height="500"
-                src={"https://www.youtube.com/embed/" + searchParams.get("v")}
-                className="rounded-2xl"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              ></iframe>
-            </div>
-            {/* <div className="w-full h-[500px]">
-          <LiveChat />
-        </div> */}
+    <div className="w-full sm:w-screen">
+      <div className="flex sm:flex-col sm:w-screen">
+        <div className="flex flex-col w-[900px] mt-[72px] m-4 ml-24 sm:mt-[70px] sm:m-0 sm:w-screen">
+          <div className="sm:w-screen">
+            <iframe
+              width="900"
+              height="500"
+              src={"https://www.youtube.com/embed/" + searchParams.get("v")}
+              className="rounded-2xl sm:rounded-none sm:w-screen sm:h-[250px]"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
           </div>
 
-          <div className="font-roboto">
+          <div className="font-roboto sm:w-screen">
             <div>
-              <p className="font-bold text-xl py-1 m-2">
+              <p className="font-bold text-xl py-1 m-2 sm:text-base sm:line-clamp-2">
                 {player?.[0]?.snippet?.title}
               </p>
-              <div className="flex justify-between items-center">
-                <div className="flex justify-center">
-                  <div className="flex items-center">
+              <div className="flex justify-between items-center sm:text-xs sm:flex-col sm:w-screen">
+                <div className="flex justify-center items-center sm:w-screen sm:justify-normal">
+                  <div className="flex items-center sm:ml-2">
                     <img
-                      src={channelInfo?.[0]?.snippet?.thumbnails?.high?.url}
+                      src={channelInfoData?.snippet?.thumbnails?.high?.url}
                       alt="channel name"
                       className="w-[50px] h-[50px] rounded-full"
                     />
@@ -87,15 +90,15 @@ const WatchPage = () => {
                       </p>
                       <p className="text-xs opacity-70">
                         {formatCount(
-                          channelInfo?.[0]?.statistics?.subscriberCount
-                        )}
+                          channelInfoData?.statistics?.subscriberCount
+                        )}{" "}
                         subscribers
                       </p>
                     </div>
                   </div>
                   <button
                     className={
-                      " rounded-full mx-2 px-4 h-10 font-semibold " +
+                      " rounded-full mx-2 px-4 h-10 font-semibold sm:text-[15px] " +
                       (isDarkMode
                         ? " text-black bg-white"
                         : " text-white bg-black")
@@ -104,7 +107,7 @@ const WatchPage = () => {
                     Subscribe
                   </button>
                 </div>
-                <div className="flex justify-center">
+                <div className="flex justify-center sm:w-screen sm:justify-normal sm:overflow-x-scroll sm:scrollbar-hide">
                   <div
                     className={
                       "flex items-center m-2  rounded-full " +
@@ -153,19 +156,19 @@ const WatchPage = () => {
             </div>
             <div
               className={
-                "mt-6 rounded-lg m-2 p-2 " +
+                "mt-6 rounded-lg m-2 p-2 opacity-70 sm:w-screen sm:rounded-none sm:p-0 sm:m-0 " +
                 (isDarkMode ? "bg-white bg-opacity-10" : "bg-gray-100")
               }
             >
-              <div className="flex">
-                <p className="mx-2 font-semibold">
+              <div className="flex sm:text-xs">
+                <p className="mx-2 font-semibold sm:font-normal">
                   {formatCount(player?.[0]?.statistics?.viewCount)} views
                 </p>
-                <p className="font-semibold">
+                <p className="font-semibold sm:font-normal">
                   {moment(player?.[0]?.snippet?.publishedAt).fromNow()}
                 </p>
               </div>
-              <div className="m-2">
+              <div className="m-2 sm:text-sm">
                 <div className="truncate whitespace-pre-wrap font-semibold">
                   {showMore
                     ? player?.[0]?.snippet?.description
@@ -183,11 +186,16 @@ const WatchPage = () => {
             </div>
           </div>
           <div className="comments">
-            <CommentsContainer videoId={searchParams.get("v")}/>
+            <CommentsContainer videoId={searchParams.get("v")} />
           </div>
         </div>
         <div>
-          <WatchPageVideoSuggestions videoId={searchParams.get("v")} />
+          {player?.[0]?.snippet?.liveBroadcastContent === "live" && (
+              <LiveChat />
+          )}
+          <div>
+            <WatchPageVideoSuggestions videoId={searchParams.get("v")} />
+          </div>
         </div>
       </div>
     </div>

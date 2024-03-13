@@ -30,7 +30,7 @@ const ButtonList = () => {
   const isDarkMode = useSelector((store) => store.darkMode.isDarkMode);
 
   return (
-    <div className="flex mb-5 mx-8 w-full items-center">
+    <div className="flex mb-5 mx-8 items-center sm:w-full sm:mx-0">
       <div>
         <FaChevronLeft
           size={15}
@@ -58,7 +58,7 @@ const ButtonList = () => {
             handleScroll(300);
           }}
           className={
-            "text-[#A9A9A9] m-2 mx-4 hover:scale-110 hover:text-black " +
+            "text-[#A9A9A9] my-2 ml-2 hover:scale-110 hover:text-black " +
             (isDarkMode && " text-white hover:text-white hover:scale-110")
           }
         />

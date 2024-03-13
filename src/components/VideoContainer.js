@@ -4,84 +4,85 @@ import VideoCard from "./VideoCard";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import debounce from "lodash/debounce";
+import useFetchVideos from "../utils/useFetchVideos";
 
 const VideoContainer = () => {
-  const [videos, setVideos] = useState([]);
-  const pageTokenRef = useRef("");
+  // const [videos, setVideos] = useState([]);
+  // const pageTokenRef = useRef("");
+  const videoList = useFetchVideos();
 
-  useEffect(() => {
-    fetchVideos();
-  }, []);
+  // useEffect(() => {
+  //   fetchVideos();
+  // }, []);
 
-  const fetchVideos = async () => {
-    let url = YOUTUBE_VIDEOS_API;
+  // const fetchVideos = async () => {
+  //   let url = YOUTUBE_VIDEOS_API;
 
-    if (pageTokenRef.current) {
-      url += `&pageToken=${pageTokenRef.current}`;
-    }
+  //   if (pageTokenRef.current) {
+  //     url += `&pageToken=${pageTokenRef.current}`;
+  //   }
 
-    try {
-      const data = await fetch(url);
-      const json = await data.json();
-      setVideos((prevVideos) => {
-        const newVideos = json?.items;
-        const hasSameContent = prevVideos.every(
-          (prevVideo, index) => prevVideo.id === newVideos[index].id
-        );
-        if (hasSameContent) {
-          return [...newVideos];
-        }
+  //   try {
+  //     const data = await fetch(url);
+  //     const json = await data.json();
+  //     setVideos((prevVideos) => {
+  //       const newVideos = json?.items;
+  //       const hasSameContent = prevVideos.every(
+  //         (prevVideo, index) => prevVideo.id === newVideos[index].id
+  //       );
+  //       if (hasSameContent) {
+  //         return [...newVideos];
+  //       }
 
-        // const existingVideoIds = new Set(prevVideos.map((video) => video.id));
+  //       // const existingVideoIds = new Set(prevVideos.map((video) => video.id));
 
-        // const uniqueVideos = newVideos.filter(
-        //   (video) => !existingVideoIds.has(video?.id)
-        // );
-        console.log("videosssss", videos);
-        return [...prevVideos, ...newVideos]; // prevVideos = 1-10 + 11-20
-      });
+  //       // const uniqueVideos = newVideos.filter(
+  //       //   (video) => !existingVideoIds.has(video?.id)
+  //       // );
+  //       return [...prevVideos, ...newVideos]; // prevVideos = 1-10 + 11-20
+  //     });
 
-      pageTokenRef.current = json?.nextPageToken;
-    } catch (error) {
-      console.error("Error fetching videos:", error);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  // const debounce = (func, delay) => {
-  //   let timeoutId;
-  //   return (...args) => {
-  //     clearTimeout(timeoutId);
-  //     timeoutId = setTimeout(() => {
-  //       func(...args);
-  //     }, delay);
-  //   };
+  //     pageTokenRef.current = json?.nextPageToken;
+  //   } catch (error) {
+  //     console.error("Error fetching videos:", error);
+  //   }
   // };
 
-  const debouncedHandleScroll = debounce(fetchVideos, 500);
+  // useEffect(() => {
+  //   window.addEventListener("scroll", handleScroll);
 
-  const handleScroll = () => {
-    const bottom =
-      Math.ceil(window.innerHeight + window.scrollY) >=
-      document.documentElement.scrollHeight;
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
 
-    if (bottom) {
-      debouncedHandleScroll();
-    }
-  };
+  // // const debounce = (func, delay) => {
+  // //   let timeoutId;
+  // //   return (...args) => {
+  // //     clearTimeout(timeoutId);
+  // //     timeoutId = setTimeout(() => {
+  // //       func(...args);
+  // //     }, delay);
+  // //   };
+  // // };
 
-  return videos.length === 0 ? (
+  // const debouncedHandleScroll = debounce(fetchVideos, 500);
+
+  // const handleScroll = () => {
+  //   const bottom =
+  //     Math.ceil(window.innerHeight + window.scrollY) >=
+  //     document.documentElement.scrollHeight;
+
+  //   if (bottom) {
+  //     debouncedHandleScroll();
+  //   }
+  // };
+
+  return videoList.length === 0 ? (
     <Shimmer />
   ) : (
-    <div className="flex flex-wrap w-full items-center mx-5">
-      {videos.map((video) => (
+    <div className="flex flex-wrap w-full items-center mx-5 sm:flex-col sm:m-0 sm:justify-center">
+      {videoList.map((video) => (
         <Link to={"watch?v=" + video.id} key={video?.id}>
           <VideoCard info={video} />
         </Link>

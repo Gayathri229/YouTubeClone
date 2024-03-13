@@ -28,19 +28,27 @@ const useFetchVideos = () => {
     if (pageTokenRef.current) {
       url += `&pageToken=${pageTokenRef.current}`;
     }
-    console.log("page token", pageTokenRef.current);
+    // console.log("page token", pageTokenRef.current);
 
     try {
       const data = await fetch(url);
       const json = await data.json();
       setVideos((prevVideos) => {
         const newVideos = json?.items;
-        const existingVideoIds = new Set(prevVideos.map((video) => video.id));
 
-        const uniqueVideos = newVideos.filter(
-          (video) => !existingVideoIds.has(video?.id)
+        const hasSameContent = prevVideos.every(
+          (prevVideo, index) => prevVideo.id === newVideos[index].id
         );
-        return [...prevVideos, ...uniqueVideos];
+        if (hasSameContent) {
+          return [...newVideos];
+        }
+
+        // const existingVideoIds = new Set(prevVideos.map((video) => video.id));
+
+        // const uniqueVideos = newVideos.filter(
+        //   (video) => !existingVideoIds.has(video?.id)
+        // );
+        return [...prevVideos, ...newVideos];
       });
       pageTokenRef.current = json?.nextPageToken;
     } catch (error) {
@@ -50,19 +58,19 @@ const useFetchVideos = () => {
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-  
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  
-  const debouncedHandleScroll = debounce(fetchVideos,500);
-  
+
+  const debouncedHandleScroll = debounce(fetchVideos, 500);
+
   const handleScroll = () => {
     const bottom =
       Math.ceil(window.innerHeight + window.scrollY) >=
       document.documentElement.scrollHeight;
-  
+
     if (bottom) {
       debouncedHandleScroll();
     }

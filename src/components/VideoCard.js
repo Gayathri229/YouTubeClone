@@ -2,53 +2,39 @@ import React, { useEffect, useState } from "react";
 import { formatCount } from "../utils/helper";
 import moment from "moment";
 import { YOUTUBE_CHANNELS_API } from "../utils/constants";
+import useFetchChannelInfo from "../utils/useFetchChannelInfo";
 
 const VideoCard = ({ info }) => {
-  const [channelInfo, setChannelInfo] = useState([]);
 
   const { snippet, statistics } = info;
   const { thumbnails, title, channelTitle, publishedAt, channelId } = snippet;
   const { viewCount } = statistics;
-  // console.log("snippet", info);
-
-  useEffect(() => {
-    fetchChannelInfo();
-  }, [channelId]);
-
-  const fetchChannelInfo = async () => {
-    try {
-      const channelName = await fetch(YOUTUBE_CHANNELS_API + channelId);
-      const channelNameJson = await channelName.json();
-      setChannelInfo(channelNameJson?.items?.[0]);
-    } catch (error) {
-      console.error("Error fetching channel info", error);
-    }
-  };
+  const channelInfo = useFetchChannelInfo(channelId);
 
   return (
-    <div className="w-[400px] m-2 p-2">
+    <div className="w-[400px] m-1 p-2 sm:w-screen sm:my-2 sm:mx-0 sm:p-0">
       <img
         src={
           thumbnails?.maxres?.url !== undefined
             ? thumbnails?.maxres?.url
-            : thumbnails?.medium?.url
+            : thumbnails?.high?.url
         }
         alt="thumbnail"
-        className="rounded-lg w-[384px] h-[216px]"
+        className="rounded-lg w-[384px] h-[216px] sm:w-screen sm:h-[230px] sm:rounded-none"
       />
       <div className="my-3 flex">
         <img
           src={channelInfo?.snippet?.thumbnails?.high?.url}
           alt="channel profile"
-          className="w-10 h-10 rounded-full mr-2"
+          className="w-10 h-10 rounded-full mr-2 sm:w-8 sm:h-8 sm:mx-2"
         />
 
         <div className="truncate font-roboto">
-          <p className="truncate font-semibold">{title}</p>
-          <p className="">{channelTitle}</p>
-          <div className="flex items-center text-[15px] opacity-70 relative -z-10">
+          <p className="truncate font-semibold sm:text-sm">{title}</p>
+          <p className="opacity-70 text-sm sm:text-xs">{channelTitle}</p>
+          <div className="flex items-center text-sm opacity-70 sm:text-xs">
             <p>{formatCount(viewCount)} views</p>
-            <p className="mx-1 text-sm">•</p>
+            <p className="mx-1">•</p>
             <p>{moment(publishedAt).fromNow()}</p>
           </div>
         </div>

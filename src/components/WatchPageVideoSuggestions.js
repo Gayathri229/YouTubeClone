@@ -10,7 +10,7 @@ const WatchPageVideoSuggestions = ({ videoId }) => {
   return videoSuggestions.length === 0 ? (
     <Shimmer />
   ) : (
-    <div className="m-8 mt-[72px]">
+    <div className="mr-8 mt-[72px] pr-4 sm:m-0 sm:p-0">
       {videoSuggestions.map((video) => (
         <Link to={"?v=" + video.id} key={video?.id}>
           {video.id !== videoId && <VideoSuggestionCard info={video} />}
