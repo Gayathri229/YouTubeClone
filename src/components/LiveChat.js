@@ -26,7 +26,7 @@ const LiveChat = () => {
   return (
     <div
       className={
-        "border  w-11/12 h-[570px] ml-2 mt-[75px] rounded-xl font-roboto " +
+        "border  w-11/12 h-[570px] ml-2 mt-[75px] rounded-xl font-roboto sm:hidden " +
         (isDarkMode ? "border-white border-opacity-15" : "border-gray-300")
       }
     >

@@ -18,6 +18,7 @@ import LiveChat from "./LiveChat";
 import WatchPageVideoSuggestions from "./WatchPageVideoSuggestions";
 import { hideShortMenu } from "../utils/appSlice";
 import useFetchChannelInfo from "../utils/useFetchChannelInfo";
+import { handleImageError } from "../utils/helper";
 
 const WatchPage = () => {
   const dispatch = useDispatch();
@@ -51,7 +52,6 @@ const WatchPage = () => {
     // );
     // const channelNameJson = await channelName.json();
     // setChannelInfo(channelNameJson?.items);
-    console.log("video details", player);
   };
 
   return (
@@ -83,6 +83,7 @@ const WatchPage = () => {
                       src={channelInfoData?.snippet?.thumbnails?.high?.url}
                       alt="channel name"
                       className="w-[50px] h-[50px] rounded-full"
+                      onError={handleImageError}
                     />
                     <div className="flex flex-col px-2 mx-2">
                       <p className="font-semibold text-[17px] ">

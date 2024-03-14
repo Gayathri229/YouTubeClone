@@ -1,3 +1,5 @@
+import LOADING_IMG from "../images/loadingImage.jpg";
+
 export const formatCount = (count) => {
   if (count >= 1000000) {
     return (count / 1000000).toFixed(0) + "M";
@@ -8,6 +10,10 @@ export const formatCount = (count) => {
   } else {
     return count;
   }
+};
+
+export const handleImageError = (event) => {
+  event.target.src = LOADING_IMG;
 };
 
 var nameList = [

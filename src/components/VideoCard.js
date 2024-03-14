@@ -3,9 +3,9 @@ import { formatCount } from "../utils/helper";
 import moment from "moment";
 import { YOUTUBE_CHANNELS_API } from "../utils/constants";
 import useFetchChannelInfo from "../utils/useFetchChannelInfo";
+import { handleImageError } from "../utils/helper";
 
 const VideoCard = ({ info }) => {
-
   const { snippet, statistics } = info;
   const { thumbnails, title, channelTitle, publishedAt, channelId } = snippet;
   const { viewCount } = statistics;
@@ -27,6 +27,7 @@ const VideoCard = ({ info }) => {
           src={channelInfo?.snippet?.thumbnails?.high?.url}
           alt="channel profile"
           className="w-10 h-10 rounded-full mr-2 sm:w-8 sm:h-8 sm:mx-2"
+          onError={handleImageError}
         />
 
         <div className="truncate font-roboto">

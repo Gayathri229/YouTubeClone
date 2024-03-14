@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import CommentReplies from "./CommentReplies";
 import { useState } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { handleImageError } from "../utils/helper";
 
 const Comment = ({ data }) => {
   const [showReplies, setShowReplies] = useState(false);
@@ -18,6 +19,7 @@ const Comment = ({ data }) => {
           src={snippet?.topLevelComment?.snippet?.authorProfileImageUrl}
           alt="user profile"
           className="w-11 h-11 rounded-full mt-3 sm:w-8 sm:h-8"
+          onError={handleImageError}
         />
 
         <div className="flex flex-col mx-3 mt-2">

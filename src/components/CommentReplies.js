@@ -3,6 +3,7 @@ import { BiLike } from "react-icons/bi";
 import { BiDislike } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { handleImageError } from "../utils/helper";
 
 const CommentReplies = ({ data }) => {
   const isDarkMode = useSelector((store) => store.darkMode.isDarkMode);
@@ -14,6 +15,7 @@ const CommentReplies = ({ data }) => {
           src={data?.snippet?.authorProfileImageUrl}
           alt="user profile"
           className="w-8 h-8 rounded-full mt-4 sm:w-6 sm:h-6"
+          onError={handleImageError}
         />
         <div className="flex flex-col m-3">
           <div className="flex items-center">
