@@ -46,10 +46,10 @@ const Header = () => {
   const getSearchSuggestions = async () => {
     try {
       const url =
-        "https://corsproxy.org/?" 
-        +
+        // "https://corsproxy.org/?"
+        "https://thingproxy.freeboard.io/fetch/" +
         encodeURIComponent(YOUTUBE_SEARCH_API + searchQuery);
-      const data = await fetch(url, { mode: "no-cors" });
+      const data = await fetch(url);
       const json = await data.json();
       setSearchSuggestions(json[1]);
       //update cache
@@ -83,7 +83,6 @@ const Header = () => {
 
   const clearSearch = (event) => {
     setSearchQuery("");
-    console.log("clear search", showSearchHistory);
     setShowSearchHistory(true);
     if (inputRef.current) {
       inputRef.current.focus();
@@ -97,15 +96,15 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      console.log("search box ref", searchBoxRef.current);
-      console.log("Event target", event.target);
+      // console.log("search box ref", searchBoxRef.current);
+      // console.log("Event target", event.target);
       if (
         searchBoxRef.current &&
         !searchBoxRef.current.contains(event.target) &&
         !event.target.classList.contains("clearSearchButton") &&
         !event.target.classList.contains("clearSearchDiv")
       ) {
-        console.log("searchBoxRef", showSearchHistory);
+        // console.log("searchBoxRef", showSearchHistory);
         setShowSearchHistory(false);
         setShowSuggestions(false);
       }
@@ -237,8 +236,9 @@ const Header = () => {
                               ? "hover:bg-white hover:bg-opacity-10"
                               : "hover:bg-gray-100"
                           }
+                          key={suggestion}
                         >
-                          <Link to={"/search?q=" + suggestion} key={suggestion}>
+                          <Link to={"/search?q=" + suggestion}>
                             <li
                               className={
                                 "flex items-center m-2 p-1 px-2 cursor-pointer font-roboto "
