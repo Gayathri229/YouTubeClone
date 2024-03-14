@@ -48,7 +48,7 @@ const Header = () => {
       const url =
         // "https://corsproxy.org/?"
         "https://thingproxy.freeboard.io/fetch/" +
-        encodeURIComponent(YOUTUBE_SEARCH_API + searchQuery);
+        (YOUTUBE_SEARCH_API + searchQuery);
       const data = await fetch(url);
       const json = await data.json();
       setSearchSuggestions(json[1]);
