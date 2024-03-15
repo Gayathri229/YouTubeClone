@@ -6,6 +6,10 @@ const GOOGLE_API_KEY3 = "AIzaSyBnf3Y0qm3-Gg9HMtFgcCWNbwrhGHnmcGI";
 
 const GOOGLE_API_KEY4 = "AIzaSyBg_nk3cxIJi9kbfWkEI4j_EfYuYLBCaw4";
 
+const RAILWAY_PROXY_URL = "https://web-production-bc5cc.up.railway.app/";
+
+export const PROXY_URL = "https://cors-anywhere-5d5n.onrender.com/";
+
 export const YOUTUBE_VIDEOS_API =
   `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=10&regionCode=US&key=` +
   GOOGLE_API_KEY;
@@ -22,7 +26,8 @@ export const YOUTUBE_VIDEO_PLAYER_API =
 
 export const COMMENTS_API =
   "https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&maxResults=50&key=" +
-  GOOGLE_API_KEY + "&videoId=";
+  GOOGLE_API_KEY +
+  "&videoId=";
 
 export const buildVideoApiUrl = (videoId) => {
   return (

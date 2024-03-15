@@ -8,7 +8,6 @@ import { toggleMenu } from "../utils/appSlice";
 import { YOUTUBE_SEARCH_API } from "../utils/constants";
 import { cacheResults } from "../utils/searchSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { MdOutlineDarkMode } from "react-icons/md";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { toggleDarkMode } from "../utils/darkModeSlice";
 import { IoIosSearch } from "react-icons/io";
@@ -18,6 +17,7 @@ import { PiUserCircleLight } from "react-icons/pi";
 import { MdMic } from "react-icons/md";
 import { GoHistory } from "react-icons/go";
 import { IoSunnyOutline } from "react-icons/io5";
+import { PROXY_URL } from "../utils/constants";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,10 +45,8 @@ const Header = () => {
 
   const getSearchSuggestions = async () => {
     try {
-      const url =
-        // "https://corsproxy.org/?"
-        "https://thingproxy.freeboard.io/fetch/" +
-        (YOUTUBE_SEARCH_API + searchQuery);
+      const searchAPI = YOUTUBE_SEARCH_API + searchQuery;
+      const url = PROXY_URL + searchAPI;
       const data = await fetch(url);
       const json = await data.json();
       setSearchSuggestions(json[1]);
